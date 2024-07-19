@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>3D Disco Ball Room with Dancing Penguins</title>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
+    <style>
+      @keyframes dance {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(20px); }
+        100% { transform: translateY(0); }
+      }
+
+      @keyframes discoColors {
+        0% { color: #FF0000; }
+        25% { color: #00FF00; }
+        50% { color: #0000FF; }
+        75% { color: #FFFF00; }
+        100% { color: #FF0000; }
+      }
+
+      .dancing-penguin {
+        animation: dance 1s infinite;
+      }
+
+      .disco-ball {
+        animation: discoColors 5s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Camera -->
+      <a-camera position="0 2 10"></a-camera>
+
+      <!-- Disco Ball -->
+      <a-sphere class="disco-ball" position="0 5 -5" radius="1.5"
+                material="shader: standard; metalness: 1; roughness: 0; color: #C0C0C0"
+                animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"></a-sphere>
+
+      <!-- Light Beams -->
+      <a-light type="spot" color="#FFD700" intensity="2" distance="15" angle="50" position="0 5 5" rotation="-45 0 0"></a-light>
+      <a-light type="spot" color="#FF69B4" intensity="2" distance="15" angle="50" position="0 5 -5" rotation="45 0 0"></a-light>
+      <a-light type="spot" color="#00FF00" intensity="2" distance="15" angle="50" position="5 5 0" rotation="0 45 0"></a-light>
+      <a-light type="spot" color="#1E90FF" intensity="2" distance="15" angle="50" position="-5 5 0" rotation="0 -45 0"></a-light>
+
+      <!-- Particle Effect for Disco Ball -->
+      <a-entity particle-system="preset: dust; particleCount: 1000; color: #FFD700; size: 0.1" position="0 5 -5"></a-entity>
+
+      <!-- Floor -->
+      <a-plane rotation="-90 0 0" width="10" height="10" color="#2E2E2E"></a-plane>
+
+      <!-- Dancing Penguins (using shapes) -->
+      <a-cylinder class="dancing-penguin" position="-2 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
+      <a-sphere class="dancing-penguin" position="-2 2.3 -4" radius="0.5" color="#000"></a-sphere>
+
+      <a-cylinder class="dancing-penguin" position="0 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
+      <a-sphere class="dancing-penguin" position="0 2.3 -4" radius="0.5" color="#000"></a-sphere>
+
+      <a-cylinder class="dancing-penguin" position="2 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
+      <a-sphere class="dancing-penguin" position="2 2.3 -4" radius="0.5" color="#000"></a-sphere>
+
+      <!-- Ambient Lighting -->
+      <a-light type="ambient" color="#888"></a-light>
+    </a-scene>
+  </body>
+</html>
