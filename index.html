@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>3D Disco Ball Room with Dancing Penguins</title>
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.4.0/dist/aframe-extras.min.js"></script>
     <style>
       @keyframes dance {
-        0% { transform: translateY(0); }
-        50% { transform: translateY(20px); }
-        100% { transform: translateY(0); }
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(20px);
+        }
+        100% {
+          transform: translateY(0);
+        }
       }
 
       @keyframes discoColors {
-        0% { color: #FF0000; }
-        25% { color: #00FF00; }
-        50% { color: #0000FF; }
-        75% { color: #FFFF00; }
-        100% { color: #FF0000; }
+        0% {
+          color: #ff0000;
+        }
+        25% {
+          color: #00ff00;
+        }
+        50% {
+          color: #0000ff;
+        }
+        75% {
+          color: #ffff00;
+        }
+        100% {
+          color: #ff0000;
+        }
       }
 
       .dancing-penguin {
@@ -32,37 +48,160 @@
   <body>
     <a-scene>
       <!-- Camera -->
-      <a-camera position="0 2 10"></a-camera>
+      <a-camera id="main-camera" position="0 2 10"></a-camera>
 
       <!-- Disco Ball -->
-      <a-sphere class="disco-ball" position="0 5 -5" radius="1.5"
-                material="shader: standard; metalness: 1; roughness: 0; color: #C0C0C0"
-                animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"></a-sphere>
+      <a-sphere
+        class="disco-ball"
+        position="0 5 -5"
+        radius="1.5"
+        material="shader: standard; metalness: 1; roughness: 0; color: #C0C0C0"
+        animation="property: rotation; to: 0 360 0; dur: 3000; loop: true; easing: linear"
+      ></a-sphere>
 
       <!-- Light Beams -->
-      <a-light type="spot" color="#FFD700" intensity="2" distance="15" angle="50" position="0 5 5" rotation="-45 0 0"></a-light>
-      <a-light type="spot" color="#FF69B4" intensity="2" distance="15" angle="50" position="0 5 -5" rotation="45 0 0"></a-light>
-      <a-light type="spot" color="#00FF00" intensity="2" distance="15" angle="50" position="5 5 0" rotation="0 45 0"></a-light>
-      <a-light type="spot" color="#1E90FF" intensity="2" distance="15" angle="50" position="-5 5 0" rotation="0 -45 0"></a-light>
+      <a-light
+        type="spot"
+        color="#FFD700"
+        intensity="2"
+        distance="15"
+        angle="50"
+        position="0 5 5"
+        rotation="-45 0 0"
+      ></a-light>
+      <a-light
+        type="spot"
+        color="#FF69B4"
+        intensity="2"
+        distance="15"
+        angle="50"
+        position="0 5 -5"
+        rotation="45 0 0"
+      ></a-light>
+      <a-light
+        type="spot"
+        color="#00FF00"
+        intensity="2"
+        distance="15"
+        angle="50"
+        position="5 5 0"
+        rotation="0 45 0"
+      ></a-light>
+      <a-light
+        type="spot"
+        color="#1E90FF"
+        intensity="2"
+        distance="15"
+        angle="50"
+        position="-5 5 0"
+        rotation="0 -45 0"
+      ></a-light>
 
       <!-- Particle Effect for Disco Ball -->
-      <a-entity particle-system="preset: dust; particleCount: 1000; color: #FFD700; size: 0.1" position="0 5 -5"></a-entity>
+      <a-entity
+        particle-system="preset: dust; particleCount: 1000; color: #FFD700; size: 0.1"
+        position="0 5 -5"
+      ></a-entity>
 
       <!-- Floor -->
-      <a-plane rotation="-90 0 0" width="10" height="10" color="#2E2E2E"></a-plane>
-
-      <!-- Dancing Penguins (using shapes) -->
-      <a-cylinder class="dancing-penguin" position="-2 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
-      <a-sphere class="dancing-penguin" position="-2 2.3 -4" radius="0.5" color="#000"></a-sphere>
-
-      <a-cylinder class="dancing-penguin" position="0 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
-      <a-sphere class="dancing-penguin" position="0 2.3 -4" radius="0.5" color="#000"></a-sphere>
-
-      <a-cylinder class="dancing-penguin" position="2 1 -4" radius="0.5" height="1.5" color="#000"></a-cylinder>
-      <a-sphere class="dancing-penguin" position="2 2.3 -4" radius="0.5" color="#000"></a-sphere>
+      <a-plane
+        rotation="-90 0 0"
+        width="10"
+        height="10"
+        color="#2E2E2E"
+      ></a-plane>
 
       <!-- Ambient Lighting -->
       <a-light type="ambient" color="#888"></a-light>
+
+      <!-- Script to dynamically add penguins -->
+      <script>
+        AFRAME.registerComponent('penguin-generator', {
+          init: function () {
+            const sceneEl = this.el.sceneEl;
+            const penguinCount = 5; // Number of penguins to generate
+            const cameraEl = document.querySelector('#main-camera');
+            for (let i = 0; i < penguinCount; i++) {
+              const x = (Math.random() - 0.5) * 8;
+              const z = (Math.random() - 0.5) * 8;
+              const y = 0.75;
+              const penguin = document.createElement('a-entity');
+              penguin.setAttribute('class', 'dancing-penguin');
+              penguin.setAttribute('position', { x, y, z });
+              penguin.setAttribute('look-at', '[camera]'); // Make penguins face the camera
+
+              // Create the penguin parts
+              const body = document.createElement('a-cylinder');
+              body.setAttribute('radius', '0.5');
+              body.setAttribute('height', '1.5');
+              body.setAttribute('color', '#000');
+              body.setAttribute('animation', 'property: position; dir: alternate; dur: 1000; easing: easeInOutQuad; loop: true; to: 0 0.2 0');
+
+              const belly = document.createElement('a-cylinder');
+              belly.setAttribute('radius', '0.45');
+              belly.setAttribute('height', '1.5');
+              belly.setAttribute('color', '#fff');
+              belly.setAttribute('position', '0 0.05 0.02');
+
+              const head = document.createElement('a-sphere');
+              head.setAttribute('radius', '0.5');
+              head.setAttribute('color', '#000');
+              head.setAttribute('position', '0 1 0');
+              head.setAttribute('animation', 'property: rotation; dir: alternate; dur: 500; easing: easeInOutQuad; loop: true; to: 0 20 0');
+
+              const eyeLeft = document.createElement('a-sphere');
+              eyeLeft.setAttribute('radius', '0.1');
+              eyeLeft.setAttribute('color', '#fff');
+              eyeLeft.setAttribute('position', '0.2 1.2 0.4');
+
+              const eyeRight = document.createElement('a-sphere');
+              eyeRight.setAttribute('radius', '0.1');
+              eyeRight.setAttribute('color', '#fff');
+              eyeRight.setAttribute('position', '-0.2 1.2 0.4');
+
+              const beak = document.createElement('a-cone');
+              beak.setAttribute('radius-bottom', '0.1');
+              beak.setAttribute('radius-top', '0');
+              beak.setAttribute('height', '0.2');
+              beak.setAttribute('color', '#FFA500');
+              beak.setAttribute('position', '0 1 0.5');
+              beak.setAttribute('rotation', '90 0 0');
+
+              const flipperLeft = document.createElement('a-box');
+              flipperLeft.setAttribute('width', '0.1');
+              flipperLeft.setAttribute('height', '0.5');
+              flipperLeft.setAttribute('depth', '0.2');
+              flipperLeft.setAttribute('color', '#000');
+              flipperLeft.setAttribute('position', '0.45 0.5 0');
+              flipperLeft.setAttribute('animation', 'property: rotation; dir: alternate; dur: 500; easing: easeInOutQuad; loop: true; to: 0 0 20');
+
+              const flipperRight = document.createElement('a-box');
+              flipperRight.setAttribute('width', '0.1');
+              flipperRight.setAttribute('height', '0.5');
+              flipperRight.setAttribute('depth', '0.2');
+              flipperRight.setAttribute('color', '#000');
+              flipperRight.setAttribute('position', '-0.45 0.5 0');
+              flipperRight.setAttribute('animation', 'property: rotation; dir: alternate; dur: 500; easing: easeInOutQuad; loop: true; to: 0 0 -20');
+
+              // Append parts to the penguin entity
+              penguin.appendChild(body);
+              penguin.appendChild(belly);
+              penguin.appendChild(head);
+              penguin.appendChild(eyeLeft);
+              penguin.appendChild(eyeRight);
+              penguin.appendChild(beak);
+              penguin.appendChild(flipperLeft);
+              penguin.appendChild(flipperRight);
+
+              // Append the penguin entity to the scene
+              sceneEl.appendChild(penguin);
+            }
+          }
+        });
+      </script>
+
+      <!-- Attach the penguin generator to the scene -->
+      <a-entity penguin-generator></a-entity>
     </a-scene>
   </body>
 </html>
