@@ -120,7 +120,6 @@
           init: function () {
             const sceneEl = this.el.sceneEl;
             const penguinCount = 5; // Number of penguins to generate
-            const cameraEl = document.querySelector('#main-camera');
             for (let i = 0; i < penguinCount; i++) {
               const x = (Math.random() - 0.5) * 8;
               const z = (Math.random() - 0.5) * 8;
@@ -128,7 +127,6 @@
               const penguin = document.createElement('a-entity');
               penguin.setAttribute('class', 'dancing-penguin');
               penguin.setAttribute('position', { x, y, z });
-              penguin.setAttribute('look-at', '[camera]'); // Make penguins face the camera
 
               // Create the penguin parts
               const body = document.createElement('a-cylinder');
@@ -147,7 +145,7 @@
               head.setAttribute('radius', '0.5');
               head.setAttribute('color', '#000');
               head.setAttribute('position', '0 1 0');
-              head.setAttribute('animation', 'property: rotation; dir: alternate; dur: 500; easing: easeInOutQuad; loop: true; to: 0 20 0');
+              head.setAttribute('look-at', '#main-camera'); // Ensure head looks at the camera
 
               const eyeLeft = document.createElement('a-sphere');
               eyeLeft.setAttribute('radius', '0.1');
